@@ -1,25 +1,54 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import LineChart from './components/LineChart';
+import { SafeAreaView, ScrollView } from 'react-native';
+import LineChartComponent from './components/LineChartComponent';
+
+const data = [
+  {
+    "Lux": [
+      {"value": "1798", "timestamp": "2023-11-17 21:14:12"},
+      {"value": "1805", "timestamp": "2023-11-17 21:14:18"},
+      {"value": "1798", "timestamp": "2023-11-17 21:22:47"},
+      // ... (additional Lux entries)
+      {"value": "7330", "timestamp": "2023-11-18 01:38:02"},
+      {"value": "7", "timestamp": "2023-11-18 18:49:38"}
+    ]
+  },
+  {
+    "Infrared": [
+      {"value": "453", "timestamp": "2023-11-17 21:14:12"},
+      {"value": "453", "timestamp": "2023-11-17 21:14:18"},
+      {"value": "452", "timestamp": "2023-11-17 21:22:47"},
+      // ... (additional Infrared entries)
+      {"value": "1", "timestamp": "2023-11-18 18:49:38"}
+    ]
+  },
+  {
+    "Visible": [
+      {"value": "7078233", "timestamp": "2023-11-17 21:14:12"},
+      {"value": "7078232", "timestamp": "2023-11-17 21:22:47"},
+      // ... (additional Visible entries)
+      {"value": "1", "timestamp": "2023-11-18 18:49:38"}
+    ]
+  },
+  {
+    "Full Spectrum": [
+      {"value": "7078341", "timestamp": "2023-11-17 21:14:12"},
+      {"value": "7078340", "timestamp": "2023-11-17 21:22:47"},
+      // ... (additional Full Spectrum entries)
+      {"value": "1", "timestamp": "2023-11-18 18:49:38"}
+    ]
+  }
+]
+
 
 const App = () => {
-  const data = [10, 20, 30, 40, 20];
-  const width = 300;
-  const height = 200;
-
   return (
-    <View style={styles.container}>
-      <LineChart data={data} width={width} height={height} />
-    </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView>
+        <LineChartComponent data={data} />
+      </ScrollView>
+    </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 export default App;
