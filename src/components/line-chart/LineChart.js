@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Dimensions, View } from 'react-native';
 import { styles } from './styles';
 import Svg, { G, Line, Circle, Text as SvgText } from 'react-native-svg';
 
-const window_width = Dimensions.get('window').width
+const window_width = Dimensions.get('window').width;
 
 const LineChart = ({
   line_chart_data = [],
@@ -12,6 +12,7 @@ const LineChart = ({
   circleRadius = 4,
   axisColor = 'green',
   axisWidth = 2,
+  axisLabelsFontSize = 10,
 }) => {
   const marginFor_x_fromLeft = 50;
   const marginFor_y_fromBottom = 50;
@@ -22,12 +23,18 @@ const LineChart = ({
   const x_axis_x2_point = window_width - padding_from_screenBorder;
   const x_axis_y2_point = containerHeight - marginFor_y_fromBottom;
   const x_axis_actual_width = window_width - padding_from_screenBorder;
-  const gap_between_x_axis_ticks = x_axis_actual_width / (line_chart_data.length - 1)
+  const gap_between_x_axis_ticks = x_axis_actual_width / (line_chart_data.length - 1);
 
   const y_axis_x1_point = marginFor_x_fromLeft;
   const y_axis_y1_point = padding_from_screenBorder;
   const y_axis_x2_point = marginFor_x_fromLeft
   const y_axis_y2_point = containerHeight - marginFor_y_fromBottom;
+  const y_min_value = 0;
+  const y_max_value = Math.max.apply(Math, line_chart_data.map(item => item.value));
+  const y_axis_actual_height = y_axis_y2_point - y_axis_y1_point;
+  const gap_between_y_axis_ticks = (y_axis_actual_height - y_min_value) / (line_chart_data.length - 1);
+
+  const [yAxisLabels, setYAxisLabels] = useState([])
 
   const animated_x_axis_width = useRef(new Animated.Value(x_axis_x1_point),).current;
   const animated_y_axis_width = useRef(new Animated.Value(y_axis_y2_point),).current;
@@ -38,6 +45,13 @@ const LineChart = ({
   const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
   useEffect(() => {
+    const yAxisData = line_chart_data.map((item, index) => {
+      if (item.index === 0) {
+        return y_min_value;
+      }
+      return y_min_value + gap_between_y_axis_ticks * index;
+    })
+    setYAxisLabels(yAxisData);
     start_axis_circle_animation();
     start_x_y_axis_animation();
   }, [])
@@ -107,7 +121,7 @@ const LineChart = ({
           strokeWidth={axisWidth}
         />
       </G>
-    )
+    );
   }
   const render_x_axis_labels_and_ticks = () => {
     return line_chart_data.map((item, index) => {
@@ -127,31 +141,46 @@ const LineChart = ({
             x={x_point}
             y={x_axis_y1_point + 20}
             fill={axisColor}
+            fontWeight='400'
+            fontSize={axisLabelsFontSize}
             textAnchor='middle'
           >
             {item?.month}
           </SvgText>
         </G>
       )
-    })
+    });
   }
 
   const render_y_axis_labels_and_ticks = () => {
-    return (
-      <G
-        key='y-axis labels and ticks'
-      >
-        <Line
-          key='y-axis tick'
-          x1={marginFor_x_fromLeft}
-          y1={padding_from_screenBorder}
-          x2={marginFor_x_fromLeft - 10}
-          y2={padding_from_screenBorder}
-          stroke={axisColor}
-          strokeWidth={axisWidth}
-        />
-      </G>
-    )
+    return yAxisLabels.map((item, index) => {
+      let y_point = y_axis_y2_point - gap_between_y_axis_ticks * index
+      return (
+        <G
+          key={`y-axis labels and ticks${index}`}
+        >
+          <Line
+            key={`y-axis tick${index}`}
+            x1={marginFor_x_fromLeft}
+            y1={y_point}
+            x2={marginFor_x_fromLeft - 10}
+            y2={y_point}
+            stroke={axisColor}
+            strokeWidth={axisWidth}
+          />
+          <SvgText
+            key={`y-axis label${index}`}
+            x={marginFor_x_fromLeft - 20}
+            y={y_point}
+            fill={axisColor}
+            fontWeight='400'
+            fontSize={axisLabelsFontSize}
+            textAnchor="end">
+              {item}
+          </SvgText>
+        </G>
+      )
+    });
   }
 
   return (
