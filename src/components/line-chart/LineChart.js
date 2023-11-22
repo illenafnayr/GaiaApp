@@ -29,18 +29,28 @@ const LineChart = ({containerHeight = 400, circleColor = "yellow", circleRadius 
   const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
   useEffect(()=>{
+    start_axis_circle_animation();
     start_x_y_axis_animation();
   }, [])
-
+  
+  const start_axis_circle_animation = () => {
+    Animated.timing(animated_circle_radius, {
+      toValue: circleRadius,
+      duration: 1500,
+      useNativeDriver: true,
+    }).start();
+  }
   const start_x_y_axis_animation = () => {
     Animated.timing(animated_x_axis_width, {
       toValue: x_axis_x2_point,
       duration: 1500,
+      delay: 500,
       useNativeDriver: true
     }).start();
     Animated.timing(animated_y_axis_width, {
       toValue: y_axis_y1_point,
       duration: 1500,
+      delay: 500,
       useNativeDriver: true
     }).start();
   }
@@ -53,21 +63,21 @@ const LineChart = ({containerHeight = 400, circleColor = "yellow", circleRadius 
           cx={x_axis_x1_point}
           cy={x_axis_y1_point}
           fill={circleColor}
-          r={circleRadius}
+          r={animated_circle_radius}
         />
         <AnimatedCircle
           key="x-axis x2y2-circle"
           cx={x_axis_x2_point}
           cy={x_axis_y2_point}
           fill={circleColor}
-          r={circleRadius}
+          r={animated_circle_radius}
         />
-        <Circle
+        <AnimatedCircle
           key="y-axis x1y1-circle"
           cx={y_axis_x1_point}
           cy={y_axis_y1_point}
           fill={circleColor}
-          r={circleRadius}
+          r={animated_circle_radius}
         />
         <AnimatedLine
         key="x-axis"
