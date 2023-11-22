@@ -13,3 +13,5 @@ Features:
 - Register Devices
 - Create, read update destroy Device
 - Create, read update destroy System
+
+- node version: 19.2.0

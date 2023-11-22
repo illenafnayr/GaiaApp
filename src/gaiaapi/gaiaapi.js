@@ -1,8 +1,10 @@
 export async function getSensorData() {
   try {
-    const response = await fetch('localhost:8080/api/csv', {
+    console.log("Fetching...");
+    const response = await fetch('http://192.168.40.152:8080/api/csv', {
       mode: 'no-cors',
     });
+    console.log("Response: ", response);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
